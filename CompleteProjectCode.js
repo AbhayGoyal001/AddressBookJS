@@ -1,168 +1,253 @@
-//UC-1 checking 
-const present = 1;
+// UC-1
+class Contact{
+    firstName;
+    lastName;
+    address;
+    state;
+    city;
+    zipCode;
+    email;
+    phoneNumber;
 
-let isPresent = Math.floor(Math.random()*10)%2;
-
-if(isPresent == present){
-    console.log("Employee is Present");
-}
-else{
-    console.log("Employee is not Present");
-    return;
-}
-
-//UC-2 and UC-3 calculating dailywage of an employee with using a function
-let workingHours = Math.floor(Math.random()*10)%3;
-
-const isPartTime = 1;
-const isFullTime = 2;
-const partTime = 4;
-const fullTime = 8;
-const wagePerHour = 20;
-
-function getWorkingHours(workingHours){
-    switch(workingHours){
-
-        case isPartTime:
-            return partTime;
-
-        case isFullTime:
-            return fullTime;
-
-        default :
-            return 0;
-
+   //created constructor
+    constructor(firstName,lastName,address,state,city,zipCode,email,phoneNumber){
+        this.firstName = firstName
+        this.lastName = lastName
+        this.address = address
+        this.state = state
+        this.city = city
+        this.zipCode = zipCode
+        this.email = email
+        this.phoneNumber = phoneNumber
     }
 }
 
-let wage = wagePerHour*getWorkingHours(workingHours);
+//UC2
+var addressBook = new Array();
 
-console.log("Daily wage generated for employee is ",wage);
-
-//UC-4 calcultating wages for a Month
-
-const numberOfWorkingDays = 20;
-
-let empHrs = 0;
-
-for(let i = 1; i<=numberOfWorkingDays;i++){
-    let empCheck = Math.floor(Math.random()*10)%3;    //getting fulltime, partime or notime status
-    empHrs += getWorkingHours(empCheck);
-}
-
-let empWage = empHrs*wagePerHour;
-console.log("Monthly Wage of the Employee for hours "+empHrs+" is "+empWage);
-
-
-//UC-5 calculating Employee wage Untill hours are 160 or days completed are 20 
-
-empHrs = 0;
-let numberOfTotalDays = 0;
-while(empHrs <= 160 && numberOfTotalDays < 20){
+function contactDetails(firstName,lastName,address,state,city,zipCode,email,phoneNumber){
     
-    empCheck = Math.floor(Math.random()*10)%3;
-    empHrs += getWorkingHours(empCheck);
-    numberOfTotalDays++;
+    //checking duplicate
+    addressBook.filter(contact => contact.firstName == firstName)
+    .reduce(() => count++ , count = 0);
+    if(count > 0){
+        console.log("Contact With Name " + firstName + " Already Present")
+    }else{
+        const firstNamePattern = /^[A-Z][a-zA-Z]{3,}/;
+    let firstName_Check = firstNamePattern.test(firstName);
 
-}
-empWage = empHrs*wagePerHour; 
+    const lastNamePattern = /^[A-Z][a-zA-Z]{3,}/;
+    let lastName_Check = lastNamePattern.test(lastName);
 
-console.log("Total working days are : "+numberOfTotalDays+", Total working hours are : "+empHrs+", Wage of Employee is : "+empWage);
+    const addressPattern = /^[A-Za-zA-Z0-9]{3,}/;
+    let address_Check = addressPattern.test(address);
 
-//UC-6 storing the daily wage in an array and also calculating totalWage
+    const statePattern = /^[A-Za-zA-Z]{3,}/;
+    let state_Check = statePattern.test(state);
 
-function getWage(empHrs){
-    return empHrs*wagePerHour;
-}
+    const cityPattern = /^[A-Za-zA-Z]{3,}/;
+    let city_Check = cityPattern.test(city);
 
-const maxWorkingHrs = 150;
-const maxWorkingDays = 20;
+    const zipCodePattern = /^[0-9]{6}/;
+    let zipCode_Check = zipCodePattern.test(zipCode) ;
 
-let totalEmpHrs = 0;
+    const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    let email_Check = emailPattern.test(email);
 
-let totalWorkingDays = 0;
-let dailyWages = new Array();
+    const phoneNumberPattern = /^[0-9]{10}/;
+    let phoneNumber_Check = phoneNumberPattern.test(phoneNumber);
 
-numberOfTotalDays = 0;
+        if(firstName_Check == true && lastName_Check == true && address_Check == true && state_Check == true && city_Check == true
+                        && zipCode_Check == true && email_Check == true && phoneNumber_Check == true){
+           
+            let newContact = new Contact(firstName,lastName,address,state,city,zipCode,email,phoneNumber);
+            console.log("Contact Added Successfully");
+            
+            addressBook.push(newContact);
 
-while(totalEmpHrs <= maxWorkingHrs && numberOfTotalDays < maxWorkingDays){
-    
-    empCheck = Math.floor(Math.random()*10)%3;
-    empHrs = getWorkingHours(empCheck);
-
-    totalEmpHrs += empHrs;
-
-    dailyWages.push(getWage(empHrs));
-
-    numberOfTotalDays++;
-
-}
-
-empWage = totalEmpHrs*wagePerHour;
-console.log("Total working days are : "+numberOfTotalDays+", Total working hours are : "+totalEmpHrs+", Wage of Employee is : "+empWage);
-
-//UC-7A calculate total wage using array forEach traversal  
-
-let totalEmpWage = 0;
-
-function sum(currentWage){
-    totalEmpWage += currentWage;
+        }else{
+            throw 'Contact Details Are Invalid';
+        }
+    }   
 }
 
-dailyWages.forEach(sum);
+//UC3 
+contactDetails('Kushagra', 'Sharma', 'Home', 'Uttar Pradesh', 'Agra', "282005", 'kushagra@gmail.com', "3342532525");
+console.log(addressBook);
 
-console.log("Total working days are : "+numberOfTotalDays+", Total working hours are : "+totalEmpHrs+", Wage of Employee is : "+totalEmpWage);
+//UC4
 
-//UC-7B Mapping Day with Daily Wage
-
-let dayCount = 0;
-
-function mapDayWithWage(wage){
-    dayCount++;
-    return "(Day : "+dayCount+", Wage : "+wage+") ";
+//method to find and editContacts
+function editContact(findName,editedVariable,variableNewValue){
+    if(addressBook.length == null){
+        console.log("Add Contact In Address Book");
+    }else{
+        addressBook.forEach(newContact => {
+            if(newContact.firstName == findName){
+                switch(editedVariable){
+                    case "firstName":
+                        newContact.firstName = variableNewValue;
+                        break;
+                    case "lastName":
+                        newContact.lastName = variableNewValue;
+                        break;
+                    case "address":
+                        newContact.address = variableNewValue;
+                        break;
+                    case "state":
+                        newContact.state = variableNewValue;
+                        break;
+                    case "city":
+                        newContact.city = variableNewValue;
+                        break;
+                    case "zipCode":
+                        newContact.zipCode = variableNewValue;
+                        break;  
+                    case "firstName":
+                        newContact.firstName = variableNewValue;
+                        break;
+                    case "lastName":
+                        newContact.lastName = variableNewValue;
+                        break;      
+                }
+            }
+        })
+    }
 }
 
-let mappedWages = dailyWages.map(mapDayWithWage);
+//UC5
 
-console.log("Mapped array is => "+mappedWages);
-
-//UC-7C Days with Full Wage
-
-function fullWage(wage){
-    return wage.includes("160");
+//method to delete
+function deleteContact(first_Name){
+    if(addressBook.length == null){
+        console.log("Add Contact In Address Book");
+    }else{
+        for(let i = 0; i <addressBook.length ; i++){
+            if(addressBook[i].firstName == first_Name){
+                addressBook.splice(i,1);
+                console.log("Contact Deleted Successfully");
+            }
+        }
+    }
 }
 
-let fullWageDays = mappedWages.filter(fullWage);
+//UC 6
 
-console.log("Full Wage Day array is => "+fullWageDays);
-
-//UC-7D finding first day on which full wage was earned
-
-console.log(fullWageDays.find((wage) => wage.includes("160")));
-
-//UC-7E checking if every wage in fullWageDays have full wage or not
-
-function isFullWage(wage){
-    return wage.includes("160");
+//creating a function to calculate number of contacts in addressbook using reduce() method
+function numberOfContacts(){
+    return addressBook.reduce((total)=>total+1, 0);
 }
 
-console.log("Every wage in fullWageDays array has full wage ? : "+fullWageDays.every(isFullWage));
+console.log("Total number of contacts inside address book is : "+numberOfContacts());
 
-//UC-7F checking if any wage is there as part time wage
+// UC7
 
-function isPartWage(wage){
-    return wage.includes("80");
+//method for Duplicate Check Function
+function isDuplicate(firstName) {
+    // Filter matching names
+    let duplicates = addressBook.filter(contact => contact.firstName === firstName);
+    // Reduce to count duplicates
+    let duplicateCount = duplicates.reduce((count) => count + 1, 0);
+    return duplicateCount > 0;
 }
 
-console.log("Is there any wage as Part time wage in the wage array ? :"+mappedWages.some(isPartWage));
+//UC 8
 
-//UC-7G finding total number of days employee worked
-
-function totalDaysWorked(numOfDays, wage){
-    if(wage > 0)
-        return numOfDays+1;
-    else
-        return numOfDays;
+ // method to Search Contact 
+ function searchByCity_State(choice , name){
+    if(choice == "city"){
+        person = addressBook.filter(contact => contact.city == name)
+        .map(contact => contact.firstName);
+        console.log("Contact Found Who Is From "+name);
+        console.log(person);
+    }else if(choice == "state"){
+        person = addressBook.filter(contact => contact.state == name)
+        .map(contact => contact.firstName);
+        console.log("Contact Found Who Is From "+name);
+        console.log(person);
+    }else{
+        console.log("Provide Right City or State Name");
+    }
 }
 
-console.log("Number of days worked by the employee are "+dailyWages.reduce(totalDaysWorked,0));
+//UC 9
+
+ //method created to View Contact
+ 
+ function viewByCityOrState(choice , name){
+    if(choice == "city"){
+        person = addressBook.filter(contact => contact.city == name)
+        console.log("Contact Found Who Is From "+name);
+        console.log(person);
+    }else if(choice == "state"){
+        person = addressBook.filter(contact => contact.state == name)
+        console.log("Contact Found Who Is From "+name);
+        console.log(person);
+    }else{
+        console.log("Provide Right City or State Name");
+    }
+}
+
+//UC 10
+
+//count contact
+function countContactInCity_State(choice , name){
+    if(choice == "city"){
+        person = addressBook.filter(contact => contact.city == name)
+        .reduce(() => { count++;},count = 0);
+        console.log("Total Number Of Contact Found Who Is From "+name+" Are " +count);
+    }else if(choice == "state"){
+        person = addressBook.filter(contact => contact.state == name)
+        .reduce(() => { count++;},count = 0);
+        console.log("Total Number Of Contact Found Who Is From "+name+" Are " +count);
+    }else{
+        console.log("Provide Right City or State Name");
+    }
+}
+
+//UC 11
+
+//sorting contacts by name
+function sortContact(choice){
+    console.log(addressBook.sort((newContact1,newContact2) => {
+        if(newContact1.firstName < newContact2.firstName){
+            return -1;
+        }else if(newContact1.firstName == newContact2.firstName){
+            return 0;
+        }else{
+            return 1;
+        }
+    }));
+}
+
+//UC 12
+
+//sorting 
+function sortContact(choice){
+    console.log(addressBook.sort((newContact1,newContact2) => {
+        switch(choice){
+            case "city":
+                one = newContact1.city;
+                two = newContact2.city;
+                break;
+            case  "state":
+                one = newContact1.state;
+                two = newContact2.state;
+                break;
+            case "zipCode":
+                one = newContact1.zipCode;
+                two = newContact2.zipCode;
+                break;
+            default:
+                console.log("Provide Valid Input city or state or zipCode")
+        }
+   
+        if(one < two){
+            return -1;
+        }else if(one == two){
+            return 0;
+        }else{
+            return 1;
+        }
+    }));
+}
